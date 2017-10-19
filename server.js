@@ -47,10 +47,9 @@ var results = {};
 $(".theme-summary").each(function(i, element){
     
 
-    results.title = $(element).find("h2.story-heading").text();
+    results.title = $(element).find("h2.story-heading").text()
 
     results.link = $(element).find("h2").find("a").attr("href")
-    
     
     results.summary = $(element).parent().find("p.summary").text()
     
@@ -78,7 +77,7 @@ db.Article.find({}, function(error, found){
     res.render("index", {found : found})
 })
 
-})
+})// End of "/"___________
 
 
 app.post("/save/:id", function(req,res){
@@ -104,7 +103,7 @@ app.post("/save/:id", function(req,res){
     })
 
     
-})
+})// End of "/save/:id"___________
 
 app.get("/saved", function(req, res){
 
@@ -114,7 +113,7 @@ app.get("/saved", function(req, res){
     })
 
 
-})
+}) // End of "/saved"___________
 
 
 app.get("/delete/:id", function(req, res){
@@ -129,7 +128,7 @@ app.get("/delete/:id", function(req, res){
     res.redirect("/saved")
    })
 
-})
+})// End of "/delete/:id"___________
 
 
 
