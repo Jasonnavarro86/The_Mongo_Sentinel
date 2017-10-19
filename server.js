@@ -1,73 +1,71 @@
 var express = require('express');
 var request = require('request');
 var cheerio = require('cheerio');
-var mongojs = require("mongojs");
+var mongoose = require("mongoose");
+var bodyParser = require("body-parser");
 
 var app = express();
 
 var PORT = process.env.PORT || 2408
 
+// Middleware 
+
+app.set(bodyParser.json())
+app.set(bodyParser.urlencoded({extended: false}))
+
 // Setting Handlebars
 
 var exphbs = require('express-handlebars')
-
 
 app.engine('handlebars', exphbs({ defaultLayout: 'main'}))
 
 app.set('view engine', 'handlebars')
 
-var databaseUrl = "NewsScraper";
-var collections = ["NewsScraperData"];
 
-// Hook mongojs configuration to the db variable
-var db = mongojs(databaseUrl, collections);
-db.on("error", function(error) {
-  console.log("Database Error:", error);
-});
+// Mongo DB and Collection 
+var db = require("./models")
+
+mongoose.Promise = global.Promise;
+
+mongoose.connect("mongodb://localhost/mongoSentinel", {useMongoClient: true})
+
+
 
 // ________________________MY SCRAP REQUEST____________________________________________
+
+app.get("/scrape", function(req, res){
+
+
 
 request("https://www.nytimes.com/", function(error, response, html){
 
 var $ = cheerio.load(html);
 
-var results = [];
+var results = {};
 
 
 $(".theme-summary").each(function(i, element){
     
 
-    var title = $(element).find("h2.story-heading").text();
+    results.title = $(element).find("h2.story-heading").text();
 
-    var link = $(element).find("h2").find("a").attr("href")
+    results.link = $(element).find("h2").find("a").attr("href")
     
     
-    var summary = $(element).parent().find("p.summary").text()
+    results.summary = $(element).parent().find("p.summary").text()
     
-
-        console.log("title" ,title);
-
-        console.log("link", link);
-
-        console.log("summary", summary);
-
     
+    if(results.title && results.link && results.summary){
 
-    
-    if(title && link && summary){
-
-        db.NewsScraperData.insert({
-            title: title,
-            link: link,
-            summary : summary
-        })
+        db.Article.create(results)
+        
     }
 })
 
 
 })
+})
 
-console.log({});
 // ___________________________________END MY SCRAPE _____________
 
 
@@ -76,13 +74,65 @@ console.log({});
 app.get("/", function(req, res){
 
 
-
-
-db.NewsScraperData.find({}, function(error, found){
+db.Article.find({}, function(error, found){
     res.render("index", {found : found})
 })
 
 })
+
+
+app.post("/save/:id", function(req,res){
+
+    var id = req.params.id;
+
+    var resObj = {}
+    db.Article.findOne({_id : id})
+    .then(function(foundOne){
+
+        resObj.title = foundOne.title;
+        resObj.link = foundOne.link;
+        resObj.summary = foundOne.summary;
+        
+        db.SavedArticle.create(resObj)
+
+        db.Article.findOneAndRemove( {_id : id}, function(err, homeDelete){
+            if(err){
+                console.log(err);
+            }
+            res.redirect("/")
+        })
+    })
+
+    
+})
+
+app.get("/saved", function(req, res){
+
+    db.SavedArticle.find({}, function(err, foundTwo){
+
+        res.render("saved", {saved : foundTwo})
+    })
+
+
+})
+
+
+app.get("/delete/:id", function(req, res){
+
+    var id2 = req.params.id;
+
+   db.SavedArticle.findOneAndRemove({_id: id2}, function(err, foundDelete){
+
+    if(err){
+        console.log(err);
+    }
+    res.redirect("/saved")
+   })
+
+})
+
+
+
 
 
 

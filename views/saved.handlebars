@@ -1,0 +1,43 @@
+{{#each saved}}
+
+<div class="articles2 jumbotron">
+    <a href="{{this.link}}">{{this.title}}</a>
+    <p>{{this.summary}}</p>
+    <button class="btn btn-primary float-right delete"  data-id="{{this._id}}">Delete Article</button>
+     <button class="btn btn-danger float-right note"  data-id="{{this._id}}">Article Notes</button>
+</div>
+{{/each}}
+
+
+
+
+
+
+
+
+
+<script type="text/javascript">
+
+$("#scrapeBtn").hide();
+
+    $(".note").on("click", function(){
+
+
+
+    })
+
+
+
+
+     $(".delete").on("click", function(){
+
+
+           $.get("/delete/" + $(this).data().id, function(data){
+                window.location.href = "/saved";
+           })
+            
+           
+           })
+  
+
+</script>
