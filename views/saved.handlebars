@@ -3,41 +3,76 @@
 <div class="articles2 jumbotron">
     <a href="{{this.link}}">{{this.title}}</a>
     <p>{{this.summary}}</p>
-    <button class="btn btn-primary float-right delete"  data-id="{{this._id}}">Delete Article</button>
-     <button class="btn btn-danger float-right note"  data-id="{{this._id}}">Article Notes</button>
+    <button class="btn btn-primary float-right delete" data-id="{{this._id}}">Delete Article</button>
+    <button class="btn btn-danger float-right note" data-id="{{this._id}}">Article Notes</button>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Notes For Article</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+            </div>
+            <div class="modal-body">
+               
+
+
+                <div id="notesDiv">
+                    {{note}}
+                    <button class="btn btn-danger">X</button>
+                </div>
+
+                <div id="addNote">
+                    <input type="text">
+                </div>
+                
+            </div>
+            <div class="modal-footer">
+
+                <button  type="button"  data-id="{{this._id}}" class="btn btn-primary modNote">Add Note</button>
+            </div>
+        </div>
+    </div>
 </div>
 {{/each}}
 
 
 
 
-
-
-
-
-
 <script type="text/javascript">
+    $("#scrapeBtn").hide();
 
-$("#scrapeBtn").hide();
+    $(".note").on("click", function () {
 
-    $(".note").on("click", function(){
-
-
+        $('#myModal').modal('toggle')
 
     })
 
 
 
 
-     $(".delete").on("click", function(){
+    $(".delete").on("click", function () {
 
 
-           $.get("/delete/" + $(this).data().id, function(data){
-                window.location.href = "/saved";
-           })
-            
-           
-           })
-  
+        $.get("/delete/" + $(this).data().id, function (data) {
+            window.location.href = "/saved";
+        })
+
+
+    })
+
+
+    $(".modNote").on("click", function(){
+
+        $.get("/addnote/", function(data){
+
+
+
+        })
+
+    })
 
 </script>
