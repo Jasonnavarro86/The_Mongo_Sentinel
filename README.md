@@ -2,11 +2,11 @@
 ## News Scraper with Mongo DB and Cheerios 
 
 ### Objective
-+ Use cherrios npm package to scrape news articles over the web. 
++ Used cherrios npm package to scrape news articles over the web. 
 
-+ Succesfully used mongoDB to store articles scraped from THE NY TIMES.
++ Succesfully used mongoDB and the Mongoose npm package to store articles scraped from THE NY TIMES.
 
-+ Store notes for each individule article that users input and display them on a modal.
++ Use MongoDB and the Mongoose npm package to Store notes for each individule article that users input and display them on a modal.
 
 
 
