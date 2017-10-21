@@ -118,15 +118,23 @@ app.post("/save/:id", function (req, res) {
 }) // End of "/save/:id"___________
 
 app.get("/saved", function (req, res) {
+    db.Note.find({}, function(err, noteFound){
+        
+   
+    db.SavedArticle.find({})
+    .populate("Note")
+    .exec(function(err, data){
 
-    db.SavedArticle.find({}, function (err, foundTwo) {
-
+       console.log(noteFound);
+         
         res.render("saved", {
-            saved: foundTwo
+                saved: data,
+                theNote: noteFound
+
+            })
         })
+
     })
-
-
 }) // End of "/saved"___________
 
 
@@ -147,7 +155,38 @@ app.get("/delete/:id", function (req, res) {
 }) // End of "/delete/:id"___________
 
 
+app.get("/addnote/:note", function(req, res){
 
+   
+var array = req.params.note.split(",");
+
+
+var getNote = {
+    
+   body: array[0]
+
+}
+console.log(array[1]);
+    db.Note.create(getNote, function(err, made){
+            if (err){
+               throw err;
+            }
+
+
+        db.SavedArticle.findOneAndUpdate({ _id : array[1]}, { $push: { "note": made._id }} , { new: true }, function(error, update){
+            if (err){
+                throw err;
+            }
+
+            res.send(update)
+        })
+
+        
+
+    })
+
+    
+})
 
 
 
