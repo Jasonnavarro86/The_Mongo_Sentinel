@@ -42,17 +42,19 @@ mongoose.connect("mongodb://localhost/mongoSentinel", {
 app.get("/scrape", function (req, res) {
 
 
-
+    var numSet = 0;
+    
     request("https://www.nytimes.com/", function (error, response, html) {
 
         var $ = cheerio.load(html);
 
         var results = {};
 
+       
 
         $(".theme-summary").each(function (i, element) {
 
-
+            numSet++;
             results.title = $(element).find("h2.story-heading").text()
 
             results.link = $(element).find("h2").find("a").attr("href")
@@ -63,12 +65,19 @@ app.get("/scrape", function (req, res) {
             if (results.title && results.link && results.summary) {
 
                 db.Article.create(results)
+                
+                
 
             }
+
+            
+            
         })
 
+       res.send("New Articles Scraped!")
 
     })
+    
 })
 
 // ___________________________________END MY SCRAPE _____________
@@ -118,23 +127,17 @@ app.post("/save/:id", function (req, res) {
 }) // End of "/save/:id"___________
 
 app.get("/saved", function (req, res) {
-    db.Note.find({}, function(err, noteFound){
-        
    
     db.SavedArticle.find({})
-    .populate("Note")
+    .populate("note")
     .exec(function(err, data){
 
-       console.log(noteFound);
-         
         res.render("saved", {
                 saved: data,
-                theNote: noteFound
-
+           
             })
         })
 
-    })
 }) // End of "/saved"___________
 
 
@@ -157,9 +160,7 @@ app.get("/delete/:id", function (req, res) {
 
 app.get("/addnote/:note", function(req, res){
 
-   
 var array = req.params.note.split(",");
-
 
 var getNote = {
     
@@ -172,7 +173,6 @@ console.log(array[1]);
                throw err;
             }
 
-
         db.SavedArticle.findOneAndUpdate({ _id : array[1]}, { $push: { "note": made._id }} , { new: true }, function(error, update){
             if (err){
                 throw err;
@@ -180,27 +180,21 @@ console.log(array[1]);
 
             res.send(update)
         })
-
-        
-
     })
-
-    
 })
 
+app.get("/deleteNote/:id", function(req, res){
 
+    db.Note.findOneAndRemove({_id : req.params.id}, function(err, delNote){
+        if (err){
+            throw err;
+        }
 
+    res.send(delNote)
+    })
+})
 
-
-
-
-
-
-
-
-
-
-
+// Listening to PORT
 app.listen(PORT, function () {
     console.log("App running on Port " + PORT);
 })

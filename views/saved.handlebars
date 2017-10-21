@@ -1,3 +1,4 @@
+
 {{#each saved}}
 
 <div class="articles2 jumbotron">
@@ -12,7 +13,7 @@
 
 
 <!-- Modal -->
-<div class="modal fade myModal{{this._id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal theOne fade myModal{{this._id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -28,25 +29,23 @@
 
                 <div id="notesDiv">
                     
-                    <p>Notes For Article {{this._id}}</p>
+                    <p>Notes For Article {{this.title}}</p>
                     
-                   
-                    <p>{{this.note}}</p>
-               
-                   
-             
-                 
-                
-                    {{!-- <div class="notesDiv">
-                        <h4>{{this.note}}</h4>
-                    </div> --}}
-                  
-                    <button class="btn btn-danger float-right">&times;</button>
+                   {{#each this.note}}
 
+                    <div class="container colorDiv">
+                        <button class="btn btn-danger float-right closeNote" data-id="{{this._id}}">&times;</button>
+                    <p>{{this.body}}</p>
+                    
+                    </div>
+
+                   {{/each}}
+             
+                
                 </div>
 
                 <div id="addNote">
-                    <input id="modalInput" type="text">
+                    <input class="modalInput{{this._id}}" type="text">
                 </div>
 
             </div>
@@ -59,6 +58,7 @@
 </div>
 
 {{/each}}
+
 
 
 
@@ -82,19 +82,24 @@
     $(".modNote").on("click", function () {
 
 
-        var Data = $("#modalInput").val();
+        var Data = $(".modalInput" + $(this).data().id).val();
 
 
 
         $.get("/addnote/" + Data + "," + $(this).data().id, function (data) {
 
-            console.log(data);
+            window.location.href = "/saved";
         })
 
+    })
 
-        //empty input
-        $("#modalInput").val("")
+    $(".closeNote").on("click", function(){
 
+        $.get("/deleteNote/" + $(this).data().id, function(data){
+
+       //     $('.theOne').modal('hide');
+          window.location.href = "/saved";
+        })
 
     })
 
