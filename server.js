@@ -31,9 +31,14 @@ var db = require("./models")
 
 mongoose.Promise = global.Promise;
 
-mongoose.connect("mongodb://localhost/mongoSentinel", {
-    useMongoClient: true
-})
+if (process.env.MONGODB_URI){
+    mongoose.connect(process.env.MONGODB_URI)
+}else{
+    mongoose.connect("mongodb://localhost/mongoSentinel", {
+        useMongoClient: true
+    })
+}
+
 
 
 
