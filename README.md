@@ -6,11 +6,12 @@
 
 
 ## DEMO 
-+ Gif one shows the articles being scraped and being saved.
+### Gif one shows the articles being scraped and being saved.
 
 ![demo1](https://user-images.githubusercontent.com/28733244/31854814-73cc14ee-b66d-11e7-91e7-1267248a1cce.gif)
 
-+ Gif two shows notes being taken on the articles.
+### Gif two shows notes being taken on the articles.
+
 ![demo 2](https://user-images.githubusercontent.com/28733244/31854818-7ed9220a-b66d-11e7-9de8-c77b80991fa0.gif)
 
 + All articles can be deleted from the saved status.
